@@ -1,0 +1,50 @@
+{
+    "page": {
+        "title": "MoYuStudio - PowerText",
+        "font_family": "Consolas, 'Courier New', monospace",
+        "font_size": "14px",
+        "line_height": "0.9",
+        "text_color": "#d4d4d4",
+        "bg_color": "#1e1e1e",
+        "max_width": "100%",
+        "margin": "0 auto",
+        "padding": {
+            "top": "90px",
+            "right": "120px",
+            "bottom": "90px",
+            "left": "120px"
+        },
+        "responsive": {
+            "auto": {
+                "enabled": true,
+                "min_width": "320px",
+                "max_width": "100%"
+            }
+        }
+    },
+    "title": {
+        "font_weight": "normal",
+        "color": "#d4d4d4",
+        "font_size": "14px",
+        "margin": "0",
+        "padding": "0"
+    },
+    "item": {
+        "margin": "0",
+        "padding": "0 0 0 20px",
+        "font_family": "Consolas, 'Courier New', monospace"
+    },
+    "print": {
+        "enabled": true,
+        "page_break": "avoid",
+        "background": "white",
+        "text_color": "black",
+        "max_width": "100%",
+        "padding": {
+            "top": "0",
+            "right": "0",
+            "bottom": "0",
+            "left": "0"
+        }
+    }
+} 

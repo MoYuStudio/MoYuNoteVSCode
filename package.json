@@ -1,0 +1,135 @@
+{
+  "name": "power-text-vscode",
+  "displayName": "Power Text",
+  "description": "在编辑器中对文本进行额外支持",
+  "version": "0.0.0",
+  "engines": {
+    "vscode": "^1.60.0"
+  },
+  "enabledApiProposals": [
+    "contribViewsWelcome"
+  ],
+  "categories": [
+    "Other"
+  ],
+  "activationEvents": [
+    "onCommand:power-text.activate",
+    "onCommand:power-text.openConfig",
+    "onCommand:power-text.openBaseConfig",
+    "onCommand:power-text.exportHtml",
+    "onCommand:power-text.exportHtmlWithPicker"
+  ],
+  "main": "./extension.js",
+  "icon": "icon.png",
+  "contributes": {
+    "commands": [
+      {
+        "command": "power-text.activate",
+        "title": "激活彩色文本"
+      },
+      {
+        "command": "power-text.openConfig",
+        "title": "打开彩色文本配置文件"
+      },
+      {
+        "command": "power-text.openBaseConfig",
+        "title": "打开基础配置文件"
+      },
+      {
+        "command": "power-text.exportHtml",
+        "title": "导出当前文件为HTML"
+      },
+      {
+        "command": "power-text.exportHtmlWithPicker",
+        "title": "导出文件为HTML"
+      }
+    ],
+    "languages": [
+      {
+        "id": "pwtt",
+        "extensions": [".pwtt"],
+        "icon": {
+          "light": "base_file_icon.png",
+          "dark": "base_file_icon.png"
+        }
+      }
+    ],
+    "viewsContainers": {
+      "activitybar": [
+        {
+          "id": "power-text-sidebar",
+          "title": "Power Text",
+          "icon": "icon.png"
+        }
+      ]
+    },
+    "views": {
+      "power-text-sidebar": [
+        {
+          "id": "power-text-symbols",
+          "name": "导出",
+          "type": "tree",
+          "when": "true",
+          "visibility": "visible",
+          "collapsible": true,
+          "expanded": true
+        },
+        {
+          "id": "power-text-config",
+          "name": "配置",
+          "type": "tree",
+          "when": "true",
+          "visibility": "visible",
+          "collapsible": true,
+          "expanded": true
+        },
+        {
+          "id": "power-text-info",
+          "name": "信息",
+          "type": "tree",
+          "when": "true",
+          "visibility": "visible",
+          "collapsible": true,
+          "expanded": true
+        }
+      ]
+    },
+    "viewsWelcome": [
+      {
+        "view": "power-text-symbols",
+        "contents": "导出选项：\n[导出当前文件为HTML](command:power-text.exportHtml)\n[导出文件为HTML](command:power-text.exportHtmlWithPicker)",
+        "when": "true",
+        "group": "power-text",
+        "order": 1
+      },
+      {
+        "view": "power-text-config",
+        "contents": "点击打开配置文件：\n[打开配置](command:power-text.openConfig)\n[打开高级配置](command:power-text.openBaseConfig)",
+        "when": "true",
+        "group": "power-text",
+        "order": 2
+      },
+      {
+        "view": "power-text-info",
+        "contents": "![Power Text Logo](icon.png)\n\nPower Text 插件信息：\n[查看文档](https://github.com/MoYuStudio/PowerTextVSCode)\n[报告问题](https://github.com/MoYuStudio/PowerTextVSCode/issues)",
+        "when": "true",
+        "group": "power-text",
+        "order": 3
+      }
+    ]
+  },
+  "scripts": {
+    "vscode:prepublish": "echo 'Preparing for publish'",
+    "package": "vsce package",
+    "compile": "echo Compilation complete"
+  },
+  "devDependencies": {
+    "@types/vscode": "^1.60.0",
+    "vsce": "^2.15.0"
+  },
+  "publisher": "MoYuStudio",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/MoYuStudio/PowerTextVSCode"
+  }
+}

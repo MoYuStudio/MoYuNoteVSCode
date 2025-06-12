@@ -99,21 +99,18 @@
         "view": "power-text-symbols",
         "contents": "导出选项：\n[导出当前文件为HTML](command:power-text.exportHtml)\n[导出文件为HTML](command:power-text.exportHtmlWithPicker)",
         "when": "true",
-        "group": "power-text",
         "order": 1
       },
       {
         "view": "power-text-config",
-        "contents": "点击打开配置文件：\n[打开配置](command:power-text.openConfig)\n[打开高级配置](command:power-text.openBaseConfig)",
+        "contents": "配置文件：\n[打开配置](command:power-text.openConfig)\n[打开高级配置](command:power-text.openBaseConfig)",
         "when": "true",
-        "group": "power-text",
         "order": 2
       },
       {
         "view": "power-text-info",
-        "contents": "![Power Text Logo](icon.png)\n\nPower Text 插件信息：\n[查看文档](https://github.com/MoYuStudio/PowerTextVSCode)\n[报告问题](https://github.com/MoYuStudio/PowerTextVSCode/issues)",
+        "contents": "插件信息：\n[查看文档](https://github.com/MoYuStudio/PowerTextVSCode)\n[报告问题](https://github.com/MoYuStudio/PowerTextVSCode/issues)",
         "when": "true",
-        "group": "power-text",
         "order": 3
       }
     ]

@@ -1,0 +1,106 @@
+{
+    "replace": true,
+    "replace_symbol": "",
+    "auto_line_break": true,
+    
+    "special_symbols": {
+        "styles": {
+            "#-": {},
+            "#-r": {
+                "color": "#ff0000",
+                "fontWeight": "bold",
+                "fontStyle": "normal",
+                "fontFamily": "Consolas, 'Courier New', monospace"
+            },
+            "#-g": {
+                "color": "#00ff00",
+                "fontWeight": "normal",
+                "fontStyle": "italic",
+                "fontFamily": "Arial, sans-serif"
+            },
+            "#-b": {
+                "color": "#0000ff",
+                "fontWeight": "bold",
+                "textDecoration": "underline",
+                "fontFamily": "'Times New Roman', serif"
+            },
+            "#-y": {
+                "color": "#ffff00",
+                "backgroundColor": "#333333",
+                "fontWeight": "bold",
+                "fontFamily": "Verdana, sans-serif"
+            },
+            "#-p": {
+                "color": "#800080",
+                "textDecoration": "line-through",
+                "fontStyle": "italic",
+                "fontFamily": "Georgia, serif"
+            },
+            "#-gr": {
+                "color": "#808080",
+                "fontWeight": "normal",
+                "fontFamily": "Tahoma, sans-serif"
+            },
+            "#-w": {
+                "color": "#ffffff",
+                "backgroundColor": "#000000",
+                "borderRadius": "3px",
+                "fontFamily": "Impact, sans-serif"
+            },
+            "#-k": {
+                "color": "#000000",
+                "backgroundColor": "#ffffff",
+                "border": "1px solid #000000",
+                "fontFamily": "Comic Sans MS, cursive"
+            },
+            "#-c": {
+                "color": "#00ffff",
+                "textShadow": "0 0 5px #00ffff",
+                "fontWeight": "bold",
+                "fontFamily": "Trebuchet MS, sans-serif"
+            },
+            "#-m": {
+                "color": "#ff00ff",
+                "fontStyle": "italic",
+                "textDecoration": "underline wavy",
+                "fontFamily": "Palatino, serif"
+            },
+            "#-o": {
+                "color": "#ffa500",
+                "backgroundColor": "#333333",
+                "borderRadius": "3px",
+                "fontFamily": "Garamond, serif"
+            },
+            "#-br": {
+                "color": "#a52a2a",
+                "fontWeight": "bold",
+                "fontStyle": "italic",
+                "fontFamily": "Bookman, serif"
+            },
+            "#-pk": {
+                "color": "#ffc0cb",
+                "backgroundColor": "#333333",
+                "fontFamily": "Century Gothic, sans-serif"
+            },
+            "#-lb": {
+                "color": "#add8e6",
+                "fontWeight": "bold",
+                "textDecoration": "underline dotted",
+                "fontFamily": "Courier, monospace"
+            },
+            "#-lg": {
+                "color": "#90ee90",
+                "backgroundColor": "#333333",
+                "borderRadius": "3px",
+                "fontFamily": "Lucida Console, monospace"
+            },
+            "#-ly": {
+                "color": "#ffffe0",
+                "backgroundColor": "#333333",
+                "borderRadius": "3px",
+                "fontFamily": "Monaco, monospace"
+            }
+        },
+        "functions": {}
+    }
+} 

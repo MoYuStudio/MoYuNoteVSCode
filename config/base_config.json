@@ -3,7 +3,7 @@
         "title": "MoYuNote",
         "font_family": "Consolas, 'Courier New', monospace",
         "font_size": "14px",
-        "line_height": "0.9",
+        "line_height": "1.2",
         "text_color": "#d4d4d4",
         "bg_color": "#1e1e1e",
         "max_width": "100%",

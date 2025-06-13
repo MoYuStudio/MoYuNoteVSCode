@@ -2,99 +2,122 @@
     "replace": true,
     "replace_symbol": "",
     "auto_line_break": true,
+    "default_text": {
+        "color": "#d4d4d4",
+        "fontWeight": "normal",
+        "fontStyle": "normal",
+        "fontFamily": "Consolas, 'Courier New', monospace",
+        "backgroundColor": "transparent",
+        "textDecoration": "none",
+        "textShadow": "none",
+        "border": "none",
+        "borderRadius": "0"
+    },
+    
+    "bracket_colors": [
+        "#ff0000",
+        "#00ff00",
+        "#0000ff",
+        "#ffff00",
+        "#ff00ff",
+        "#00ffff"
+    ],
     
     "special_symbols": {
         "styles": {
-            "#-": {},
-            "#-r": {
+            "#": {
+                "color": "#d4d4d4",
+                "fontFamily": "Consolas, 'Courier New', monospace"
+            },
+            "#r": {
                 "color": "#ff0000",
                 "fontWeight": "bold",
                 "fontStyle": "normal",
                 "fontFamily": "Consolas, 'Courier New', monospace"
             },
-            "#-g": {
+            "#g": {
                 "color": "#00ff00",
                 "fontWeight": "normal",
                 "fontStyle": "italic",
                 "fontFamily": "Arial, sans-serif"
             },
-            "#-b": {
+            "#b": {
                 "color": "#0000ff",
                 "fontWeight": "bold",
                 "textDecoration": "underline",
                 "fontFamily": "'Times New Roman', serif"
             },
-            "#-y": {
+            "#y": {
                 "color": "#ffff00",
                 "backgroundColor": "#333333",
                 "fontWeight": "bold",
                 "fontFamily": "Verdana, sans-serif"
             },
-            "#-p": {
+            "#p": {
                 "color": "#800080",
                 "textDecoration": "line-through",
                 "fontStyle": "italic",
                 "fontFamily": "Georgia, serif"
             },
-            "#-gr": {
+            "#gr": {
                 "color": "#808080",
                 "fontWeight": "normal",
                 "fontFamily": "Tahoma, sans-serif"
             },
-            "#-w": {
+            "#w": {
                 "color": "#ffffff",
                 "backgroundColor": "#000000",
                 "borderRadius": "3px",
                 "fontFamily": "Impact, sans-serif"
             },
-            "#-k": {
+            "#k": {
                 "color": "#000000",
                 "backgroundColor": "#ffffff",
                 "border": "1px solid #000000",
                 "fontFamily": "Comic Sans MS, cursive"
             },
-            "#-c": {
+            "#c": {
                 "color": "#00ffff",
                 "textShadow": "0 0 5px #00ffff",
                 "fontWeight": "bold",
                 "fontFamily": "Trebuchet MS, sans-serif"
             },
-            "#-m": {
+            "#m": {
                 "color": "#ff00ff",
                 "fontStyle": "italic",
                 "textDecoration": "underline wavy",
                 "fontFamily": "Palatino, serif"
             },
-            "#-o": {
+            "#o": {
                 "color": "#ffa500",
                 "backgroundColor": "#333333",
                 "borderRadius": "3px",
                 "fontFamily": "Garamond, serif"
             },
-            "#-br": {
+            "#br": {
                 "color": "#a52a2a",
                 "fontWeight": "bold",
                 "fontStyle": "italic",
                 "fontFamily": "Bookman, serif"
             },
-            "#-pk": {
+            "#pk": {
                 "color": "#ffc0cb",
                 "backgroundColor": "#333333",
                 "fontFamily": "Century Gothic, sans-serif"
             },
-            "#-lb": {
+            "#lb": {
                 "color": "#add8e6",
                 "fontWeight": "bold",
                 "textDecoration": "underline dotted",
                 "fontFamily": "Courier, monospace"
             },
-            "#-lg": {
+            "#lg": {
                 "color": "#90ee90",
                 "backgroundColor": "#333333",
                 "borderRadius": "3px",
                 "fontFamily": "Lucida Console, monospace"
             },
-            "#-ly": {
+            "#ly": {
                 "color": "#ffffe0",
                 "backgroundColor": "#333333",
                 "borderRadius": "3px",

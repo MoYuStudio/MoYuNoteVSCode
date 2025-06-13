@@ -19,9 +19,6 @@ function textToHtml(text, config, baseConfig) {
             --text-color: ${baseConfig.page.text_color};
             --bg-color: ${baseConfig.page.bg_color};
             --link-color: #0066cc;
-            ${Object.entries(config.special_symbols).map(([symbol, color], index) => 
-                `--symbol-${index + 1}-color: ${color};`
-            ).join('\n            ')}
         }
         
         /* 页面主体样式 */
@@ -60,8 +57,24 @@ function textToHtml(text, config, baseConfig) {
         }
         
         /* 特殊符号样式 */
-        ${Object.entries(config.special_symbols).map(([symbol, color], index) => 
-            `.symbol-${index + 1} { color: var(--symbol-${index + 1}-color); }`
+        ${Object.entries(config.special_symbols.styles).map(([symbol, style]) => {
+            const className = symbol.replace(/[^a-zA-Z0-9]/g, '_');
+            return `.${className} {
+                color: ${style.color || config.default_text.color};
+                font-weight: ${style.fontWeight || config.default_text.fontWeight};
+                font-style: ${style.fontStyle || config.default_text.fontStyle};
+                font-family: ${style.fontFamily || config.default_text.fontFamily};
+                background-color: ${style.backgroundColor || config.default_text.backgroundColor};
+                text-decoration: ${style.textDecoration || config.default_text.textDecoration};
+                text-shadow: ${style.textShadow || config.default_text.textShadow};
+                border: ${style.border || config.default_text.border};
+                border-radius: ${style.borderRadius || config.default_text.borderRadius};
+            }`;
+        }).join('\n        ')}
+        
+        /* 括号样式 */
+        ${config.bracket_colors.map((color, index) => 
+            `.bracket-${index} { color: ${color}; }`
         ).join('\n        ')}
         
         /* 打印样式 */
@@ -82,6 +95,16 @@ function textToHtml(text, config, baseConfig) {
 <body>
 `;
 
+    // 括号对定义
+    const bracketPairs = [
+        ['(', ')'],
+        ['[', ']'],
+        ['{', '}'],
+        ['（', '）'],
+        ['［', '］'],
+        ['｛', '｝']
+    ];
+
     lines.forEach(line => {
         // 保留原始空白字符
         if (line === '') {
@@ -90,11 +113,53 @@ function textToHtml(text, config, baseConfig) {
         }
 
         let processedLine = line;
-        // 先处理最长的符号，避免部分匹配
-        const sortedSymbols = Object.keys(config.special_symbols).sort((a, b) => b.length - a.length);
         
-        // 查找所有符号的位置
+        // 处理括号彩色化
+        const stack = [];
+        const bracketPositions = [];
+        
+        for (let i = 0; i < processedLine.length; i++) {
+            const char = processedLine[i];
+            
+            // 检查是否是开括号
+            for (const [open, close] of bracketPairs) {
+                if (char === open) {
+                    stack.push({
+                        char: open,
+                        index: i,
+                        colorIndex: stack.length % config.bracket_colors.length
+                    });
+                    break;
+                }
+            }
+
+            // 检查是否是闭括号
+            for (const [open, close] of bracketPairs) {
+                if (char === close && stack.length > 0) {
+                    const last = stack[stack.length - 1];
+                    if (last.char === open) {
+                        bracketPositions.push({
+                            position: last.index,
+                            length: 1,
+                            colorIndex: last.colorIndex,
+                            type: 'open'
+                        });
+                        bracketPositions.push({
+                            position: i,
+                            length: 1,
+                            colorIndex: last.colorIndex,
+                            type: 'close'
+                        });
+                        stack.pop();
+                    }
+                }
+            }
+        }
+
+        // 处理特殊符号
+        const sortedSymbols = Object.keys(config.special_symbols.styles).sort((a, b) => b.length - a.length);
         const symbolPositions = [];
+        
         for (const symbol of sortedSymbols) {
             let pos = 0;
             while ((pos = processedLine.indexOf(symbol, pos)) !== -1) {
@@ -105,43 +170,57 @@ function textToHtml(text, config, baseConfig) {
                 );
                 
                 if (!isOverlapping) {
-                    const symbolIndex = Object.keys(config.special_symbols).indexOf(symbol) + 1;
+                    const className = symbol.replace(/[^a-zA-Z0-9]/g, '_');
                     symbolPositions.push({
                         symbol,
                         position: pos,
                         length: symbol.length,
-                        color: config.special_symbols[symbol],
-                        className: `symbol-${symbolIndex}`
+                        className
                     });
                 }
                 pos += symbol.length;
             }
         }
-        
-        // 按位置排序
-        symbolPositions.sort((a, b) => a.position - b.position);
-        
+
+        // 合并所有位置信息
+        const allPositions = [
+            ...symbolPositions.map(sp => ({ ...sp, type: 'symbol' })),
+            ...bracketPositions.map(bp => ({ ...bp, type: 'bracket' }))
+        ].sort((a, b) => a.position - b.position);
+
         // 从后向前处理，避免位置偏移
         let lastPosition = processedLine.length;
-        for (let i = symbolPositions.length - 1; i >= 0; i--) {
-            const { symbol, position, length, className } = symbolPositions[i];
-            const textToColor = processedLine.substring(position, lastPosition);
-            if (textToColor) {  // 只处理非空文本
-                // 如果启用了替换功能，将特殊符号替换为指定字符
-                const displaySymbol = config.replace ? config.replace_symbol : symbol;
-                const remainingText = textToColor.substring(length);
-                processedLine = processedLine.substring(0, position) + 
-                              `<span class="${className}" style="display: inline${config.auto_line_break ? '' : '; white-space: nowrap'}">${displaySymbol}${remainingText}</span>` + 
+        for (let i = allPositions.length - 1; i >= 0; i--) {
+            const pos = allPositions[i];
+            const textToStyle = processedLine.substring(pos.position, lastPosition);
+            
+            if (textToStyle) {
+                let styledText;
+                if (pos.type === 'symbol') {
+                    const displaySymbol = config.replace ? config.replace_symbol : pos.symbol;
+                    const remainingText = textToStyle.substring(pos.length);
+                    // 移除文本中的换行符，保持行距一致
+                    const cleanText = remainingText.replace(/\n/g, '');
+                    styledText = `<span class="${pos.className}">${displaySymbol}${cleanText}</span>`;
+                } else if (pos.type === 'bracket') {
+                    // 只对括号本身进行染色
+                    const bracketChar = textToStyle.charAt(0);
+                    const remainingText = textToStyle.substring(1);
+                    styledText = `<span class="bracket-${pos.colorIndex}">${bracketChar}</span>${remainingText}`;
+                }
+                
+                processedLine = processedLine.substring(0, pos.position) + 
+                              styledText + 
                               processedLine.substring(lastPosition);
             }
-            lastPosition = position;
+            lastPosition = pos.position;
         }
 
         // 移除行尾的换行符
         processedLine = processedLine.replace(/\n$/, '');
 
-        // 所有行都使用 item 类
-        htmlContent += `<div class="item" style="white-space: ${config.auto_line_break ? 'pre-wrap' : 'pre'}; display: block;">${processedLine}</div>\n`;
+        // 所有行都使用 item 类，确保行距一致
+        htmlContent += `<div class="item" style="line-height: ${baseConfig.page.line_height};">${processedLine}</div>\n`;
     });
 
     htmlContent += `</body>

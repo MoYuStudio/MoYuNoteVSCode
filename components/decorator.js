@@ -17,6 +17,25 @@ class DecoratorManager {
         this.decorations = new Map();
         this.outlineRanges = new Map();
         this.outlineLevels = new Map();
+        this.defaultTextStyle = {
+            color: "#d4d4d4",
+            fontWeight: "normal",
+            fontStyle: "normal",
+            fontFamily: "Consolas, 'Courier New', monospace",
+            backgroundColor: "transparent",
+            textDecoration: "none",
+            textShadow: "none",
+            border: "none",
+            borderRadius: "0"
+        };
+        this.bracketPairs = [
+            ['(', ')'],
+            ['[', ']'],
+            ['{', '}'],
+            ['（', '）'],
+            ['［', '］'],
+            ['｛', '｝']
+        ];
     }
 
     /**
@@ -28,6 +47,14 @@ class DecoratorManager {
         this.decorations.clear();
         this.outlineRanges.clear();
         this.outlineLevels.clear();
+        
+        // 设置默认文本样式
+        if (config.default_text) {
+            this.defaultTextStyle = {
+                ...this.defaultTextStyle,
+                ...config.default_text
+            };
+        }
 
         // 处理样式装饰器
         for (const [symbol, style] of Object.entries(config.special_symbols.styles)) {
@@ -35,17 +62,26 @@ class DecoratorManager {
             const decorationOptions = {
                 rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed,
                 isWholeLine: false,
+                color: style.color || this.defaultTextStyle.color,
+                backgroundColor: style.backgroundColor || this.defaultTextStyle.backgroundColor,
+                fontWeight: style.fontWeight || this.defaultTextStyle.fontWeight,
+                fontStyle: style.fontStyle || this.defaultTextStyle.fontStyle,
+                textDecoration: style.textDecoration || this.defaultTextStyle.textDecoration,
+                fontFamily: style.fontFamily || this.defaultTextStyle.fontFamily,
+                textShadow: style.textShadow || this.defaultTextStyle.textShadow,
+                border: style.border || this.defaultTextStyle.border,
+                borderRadius: style.borderRadius || this.defaultTextStyle.borderRadius,
                 after: {
                     contentText: ' ',
-                    color: style.color,
-                    backgroundColor: style.backgroundColor,
-                    fontWeight: style.fontWeight,
-                    fontStyle: style.fontStyle,
-                    textDecoration: style.textDecoration,
-                    fontFamily: style.fontFamily,
-                    textShadow: style.textShadow,
-                    border: style.border,
-                    borderRadius: style.borderRadius,
+                    color: style.color || this.defaultTextStyle.color,
+                    backgroundColor: style.backgroundColor || this.defaultTextStyle.backgroundColor,
+                    fontWeight: style.fontWeight || this.defaultTextStyle.fontWeight,
+                    fontStyle: style.fontStyle || this.defaultTextStyle.fontStyle,
+                    textDecoration: style.textDecoration || this.defaultTextStyle.textDecoration,
+                    fontFamily: style.fontFamily || this.defaultTextStyle.fontFamily,
+                    textShadow: style.textShadow || this.defaultTextStyle.textShadow,
+                    border: style.border || this.defaultTextStyle.border,
+                    borderRadius: style.borderRadius || this.defaultTextStyle.borderRadius,
                     position: 'absolute',
                     top: '0',
                     left: '0',
@@ -53,26 +89,21 @@ class DecoratorManager {
                 }
             };
 
-            // 应用样式配置
-            if (typeof style === 'string') {
-                // 兼容旧版本配置（只有颜色）
-                decorationOptions.color = style;
-                decorationOptions.after.color = style;
-            } else {
-                // 新版本配置（支持多种样式）
-                if (style.color) decorationOptions.color = style.color;
-                if (style.backgroundColor) decorationOptions.backgroundColor = style.backgroundColor;
-                if (style.fontWeight) decorationOptions.fontWeight = style.fontWeight;
-                if (style.fontStyle) decorationOptions.fontStyle = style.fontStyle;
-                if (style.textDecoration) decorationOptions.textDecoration = style.textDecoration;
-                if (style.fontFamily) decorationOptions.fontFamily = style.fontFamily;
-                if (style.textShadow) decorationOptions.textShadow = style.textShadow;
-                if (style.border) decorationOptions.border = style.border;
-                if (style.borderRadius) decorationOptions.borderRadius = style.borderRadius;
-            }
-
             // 创建装饰器
             this.decorations.set(symbol, vscode.window.createTextEditorDecorationType(decorationOptions));
+        }
+
+        // 创建括号装饰器
+        if (config.bracket_colors && config.bracket_colors.length > 0) {
+            for (let i = 0; i < config.bracket_colors.length; i++) {
+                const color = config.bracket_colors[i];
+                const decorationOptions = {
+                    rangeBehavior: vscode.DecorationRangeBehavior.ClosedClosed,
+                    isWholeLine: false,
+                    color: color
+                };
+                this.decorations.set(`bracket_${i}`, vscode.window.createTextEditorDecorationType(decorationOptions));
+            }
         }
 
         // 创建大纲装饰器
@@ -105,10 +136,18 @@ class DecoratorManager {
         const text = editor.document.getText();
         const styleRanges = new Map();
         const outlineRanges = [];
+        const bracketRanges = new Map();
         
         // 为每个符号初始化范围数组
         for (const symbol of Object.keys(config.special_symbols.styles)) {
             styleRanges.set(symbol, []);
+        }
+
+        // 初始化括号范围数组
+        if (config.bracket_colors && config.bracket_colors.length > 0) {
+            for (let i = 0; i < config.bracket_colors.length; i++) {
+                bracketRanges.set(`bracket_${i}`, []);
+            }
         }
 
         // 获取所有符号并按长度降序排序
@@ -161,6 +200,47 @@ class DecoratorManager {
             }
         }
 
+        // 处理括号彩色化
+        if (config.bracket_colors && config.bracket_colors.length > 0) {
+            // 使用栈来匹配括号
+            const stack = [];
+            for (let i = 0; i < text.length; i++) {
+                const char = text[i];
+                
+                // 检查是否是开括号
+                for (const [open, close] of this.bracketPairs) {
+                    if (char === open) {
+                        stack.push({
+                            char: open,
+                            index: i,
+                            colorIndex: stack.length % config.bracket_colors.length
+                        });
+                        break;
+                    }
+                }
+
+                // 检查是否是闭括号
+                for (const [open, close] of this.bracketPairs) {
+                    if (char === close && stack.length > 0) {
+                        const last = stack[stack.length - 1];
+                        if (last.char === open) {
+                            const colorIndex = last.colorIndex;
+                            const openRange = new vscode.Range(
+                                editor.document.positionAt(last.index),
+                                editor.document.positionAt(last.index + 1)
+                            );
+                            const closeRange = new vscode.Range(
+                                editor.document.positionAt(i),
+                                editor.document.positionAt(i + 1)
+                            );
+                            bracketRanges.get(`bracket_${colorIndex}`).push(openRange, closeRange);
+                            stack.pop();
+                        }
+                    }
+                }
+            }
+        }
+
         // 处理自动大纲
         for (let i = 0; i < editor.document.lineCount; i++) {
             const line = editor.document.lineAt(i);
@@ -201,8 +281,10 @@ class DecoratorManager {
         for (const [symbol, decoration] of this.decorations.entries()) {
             if (symbol === 'outline') {
                 editor.setDecorations(decoration, outlineRanges);
+            } else if (symbol.startsWith('bracket_')) {
+                editor.setDecorations(decoration, bracketRanges.get(symbol) || []);
             } else {
-                editor.setDecorations(decoration, styleRanges.get(symbol));
+                editor.setDecorations(decoration, styleRanges.get(symbol) || []);
             }
         }
     }

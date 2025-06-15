@@ -2,6 +2,36 @@
     "replace": true,
     "replace_symbol": "",
     "auto_line_break": true,
+    "file_types": {
+        "enabled": true,
+        "supported_types": {
+            "": true,
+            ".myn": true,
+            ".txt": true,
+            ".ini": true
+        },
+        "default_style": {
+            "color": "#d4d4d4",
+            "fontWeight": "normal",
+            "fontStyle": "normal",
+            "fontFamily": "Consolas, 'Courier New', monospace",
+            "backgroundColor": "transparent",
+            "textDecoration": "none",
+            "textShadow": "none",
+            "border": "none",
+            "borderRadius": "0"
+        },
+        "type_specific_styles": {
+            ".txt": {
+                "color": "#e6e6e6",
+                "fontFamily": "Consolas, monospace"
+            },
+            ".ini": {
+                "color": "#dcdcaa",
+                "fontFamily": "Consolas, monospace"
+            }
+        }
+    },
     "default_text": {
         "color": "#d4d4d4",
         "fontWeight": "normal",

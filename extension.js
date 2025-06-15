@@ -115,6 +115,49 @@ function loadBaseConfig() {
 }
 
 /**
+ * 检查文件类型是否支持
+ * @param {string} fileName - 文件名
+ * @param {Object} config - 配置对象
+ * @returns {boolean} - 是否支持该文件类型
+ */
+function isFileTypeSupported(fileName, config) {
+    if (!config.file_types || !config.file_types.enabled) {
+        return true; // 如果未配置文件类型支持，则默认支持所有类型
+    }
+
+    const fileExt = path.extname(fileName).toLowerCase();
+    const supportedTypes = config.file_types.supported_types;
+    
+    // 检查无后缀名文件
+    if (fileExt === '' && !fileName.includes('.')) {
+        return supportedTypes[''] === true;
+    }
+    
+    return supportedTypes[fileExt] === true;
+}
+
+/**
+ * 获取文件类型特定的样式
+ * @param {string} fileName - 文件名
+ * @param {Object} config - 配置对象
+ * @returns {Object} - 样式对象
+ */
+function getFileTypeStyle(fileName, config) {
+    if (!config.file_types || !config.file_types.enabled) {
+        return config.default_text;
+    }
+
+    const fileExt = path.extname(fileName).toLowerCase();
+    const typeStyles = config.file_types.type_specific_styles;
+    
+    if (typeStyles && typeStyles[fileExt]) {
+        return { ...config.file_types.default_style, ...typeStyles[fileExt] };
+    }
+    
+    return config.file_types.default_style;
+}
+
+/**
  * 导出树形视图提供者类
  * 用于在侧边栏显示导出选项
  */
@@ -196,9 +239,10 @@ function activate(context) {
                 return;
             }
 
-            // 检查文件类型是否为.myn
-            if (!editor.document.fileName.endsWith('.myn')) {
-                vscode.window.showErrorMessage('只能导出.myn文件');
+            // 检查文件类型
+            const fileName = editor.document.fileName;
+            if (!isFileTypeSupported(fileName, config)) {
+                vscode.window.showErrorMessage('不支持的文件类型');
                 return;
             }
 
@@ -207,7 +251,8 @@ function activate(context) {
             baseConfig = loadBaseConfig();
 
             const text = editor.document.getText();
-            const htmlContent = textToHtml(text, config, baseConfig);
+            const fileStyle = getFileTypeStyle(fileName, config);
+            const htmlContent = textToHtml(text, config, baseConfig, fileStyle);
 
             // 获取当前文件路径
             const currentFilePath = editor.document.uri.fsPath;

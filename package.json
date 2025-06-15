@@ -13,6 +13,16 @@
     "Other"
   ],
   "activationEvents": [
+    "onLanguage:myn",
+    "onLanguage:plaintext",
+    "onLanguage:ini",
+    "onLanguage:markdown",
+    "onLanguage:json",
+    "onLanguage:xml",
+    "onLanguage:yaml",
+    "onLanguage:shellscript",
+    "onLanguage:bat",
+    "onLanguage:powershell",
     "onCommand:moyu-note.activate",
     "onCommand:moyu-note.openConfig",
     "onCommand:moyu-note.openBaseConfig",
@@ -47,7 +57,16 @@
     "languages": [
       {
         "id": "myn",
-        "extensions": [".myn"],
+        "extensions": [
+          ".myn", ".txt", ".ini", "",
+          ".md", ".markdown", ".rst", ".text",
+          ".log", ".asc", ".nfo", ".diz",
+          ".me", ".1st", ".readme", ".license",
+          ".cfg", ".conf", ".config", ".properties",
+          ".json", ".xml", ".yaml", ".yml",
+          ".csv", ".tsv", ".sql", ".sh",
+          ".bat", ".cmd", ".ps1", ".reg"
+        ],
         "icon": {
           "light": "icon/base_file_icon.png",
           "dark": "icon/base_file_icon.png"

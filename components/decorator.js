@@ -1,4 +1,5 @@
 const vscode = require('vscode');
+const path = require('path');
 
 /**
  * 转义正则表达式特殊字符
@@ -36,6 +37,49 @@ class DecoratorManager {
             ['［', '］'],
             ['｛', '｝']
         ];
+    }
+
+    /**
+     * 检查文件类型是否支持
+     * @param {string} fileName - 文件名
+     * @param {Object} config - 配置对象
+     * @returns {boolean} - 是否支持该文件类型
+     */
+    isFileTypeSupported(fileName, config) {
+        if (!config.file_types || !config.file_types.enabled) {
+            return true; // 如果未配置文件类型支持，则默认支持所有类型
+        }
+
+        const fileExt = path.extname(fileName).toLowerCase();
+        const supportedTypes = config.file_types.supported_types;
+        
+        // 检查无后缀名文件
+        if (fileExt === '' && !fileName.includes('.')) {
+            return supportedTypes[''] === true;
+        }
+        
+        return supportedTypes[fileExt] === true;
+    }
+
+    /**
+     * 获取文件类型特定的样式
+     * @param {string} fileName - 文件名
+     * @param {Object} config - 配置对象
+     * @returns {Object} - 样式对象
+     */
+    getFileTypeStyle(fileName, config) {
+        if (!config.file_types || !config.file_types.enabled) {
+            return config.default_text;
+        }
+
+        const fileExt = path.extname(fileName).toLowerCase();
+        const typeStyles = config.file_types.type_specific_styles;
+        
+        if (typeStyles && typeStyles[fileExt]) {
+            return { ...config.file_types.default_style, ...typeStyles[fileExt] };
+        }
+        
+        return config.file_types.default_style;
     }
 
     /**
@@ -124,14 +168,21 @@ class DecoratorManager {
             return;
         }
 
-        // 检查文件类型是否为.myn
-        if (!editor.document.fileName.endsWith('.myn')) {
+        // 检查文件类型是否支持
+        if (!this.isFileTypeSupported(editor.document.fileName, config)) {
             // 清除所有装饰器
             for (const decoration of this.decorations.values()) {
                 editor.setDecorations(decoration, []);
             }
             return;
         }
+
+        // 获取文件类型特定的样式
+        const fileStyle = this.getFileTypeStyle(editor.document.fileName, config);
+        this.defaultTextStyle = {
+            ...this.defaultTextStyle,
+            ...fileStyle
+        };
 
         const text = editor.document.getText();
         const styleRanges = new Map();

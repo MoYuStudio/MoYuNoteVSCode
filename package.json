@@ -2,7 +2,7 @@
   "name": "moyu-note-vscode",
   "displayName": "MoYuNote",
   "description": "在编辑器中对文本进行额外支持",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "engines": {
     "vscode": "^1.60.0"
   },
@@ -79,29 +79,17 @@
         {
           "id": "moyu-note-symbols",
           "name": "导出",
-          "type": "tree",
-          "when": "true",
-          "visibility": "visible",
-          "collapsible": true,
-          "expanded": true
+          "type": "tree"
         },
         {
           "id": "moyu-note-config",
           "name": "配置",
-          "type": "tree",
-          "when": "true",
-          "visibility": "visible",
-          "collapsible": true,
-          "expanded": true
+          "type": "tree"
         },
         {
           "id": "moyu-note-info",
           "name": "信息",
-          "type": "tree",
-          "when": "true",
-          "visibility": "visible",
-          "collapsible": true,
-          "expanded": true
+          "type": "tree"
         }
       ]
     },

@@ -200,6 +200,14 @@ class ExportTreeProvider {
 async function createQuickStartFile(workspacePath) {
     const quickStartPath = path.join(workspacePath, 'MoYuNote使用文档.myn');
     try {
+        // 检查文件是否已存在
+        if (fs.existsSync(quickStartPath)) {
+            const doc = await vscode.workspace.openTextDocument(quickStartPath);
+            await vscode.window.showTextDocument(doc);
+            vscode.window.showInformationMessage('使用文档已存在，已为您打开！');
+            return;
+        }
+
         // 从当前文件读取内容
         const sourcePath = path.join(__dirname, 'MoYuNote使用文档.myn');
         const content = fs.readFileSync(sourcePath, 'utf8');
@@ -337,7 +345,7 @@ function activate(context) {
         })
     ];
 
-    // 注册树视图
+    // 注册树视图（只注册一次）
     const treeView = vscode.window.createTreeView('moyu-note-symbols', {
         treeDataProvider: exportTreeProvider
     });
@@ -364,7 +372,6 @@ function activate(context) {
     const baseConfigWatcher = vscode.workspace.createFileSystemWatcher('**/config/base_config.json');
     baseConfigWatcher.onDidChange(() => {
         baseConfig = loadBaseConfig();
-        // 如果当前有打开的编辑器，更新装饰器
         if (vscode.window.activeTextEditor) {
             decoratorManager.updateDecorations(config);
         }

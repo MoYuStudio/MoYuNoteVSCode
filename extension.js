@@ -194,6 +194,27 @@ class ExportTreeProvider {
 }
 
 /**
+ * 创建快速入门文件
+ * @param {string} workspacePath - 工作区路径
+ */
+async function createQuickStartFile(workspacePath) {
+    const quickStartPath = path.join(workspacePath, 'MoYuNote使用文档.myn');
+    try {
+        // 从当前文件读取内容
+        const sourcePath = path.join(__dirname, 'MoYuNote使用文档.myn');
+        const content = fs.readFileSync(sourcePath, 'utf8');
+        
+        // 写入到工作区
+        fs.writeFileSync(quickStartPath, content, 'utf8');
+        const doc = await vscode.workspace.openTextDocument(quickStartPath);
+        await vscode.window.showTextDocument(doc);
+        vscode.window.showInformationMessage('使用文档已创建！');
+    } catch (error) {
+        vscode.window.showErrorMessage('创建使用文档失败：' + error.message);
+    }
+}
+
+/**
  * 激活扩展
  * @param {vscode.ExtensionContext} context - 扩展上下文
  */
@@ -305,6 +326,14 @@ function activate(context) {
             } catch (error) {
                 vscode.window.showErrorMessage('导出失败：' + error.message);
             }
+        }),
+        vscode.commands.registerCommand('moyu-note.createQuickStart', async () => {
+            const workspaceFolders = vscode.workspace.workspaceFolders;
+            if (!workspaceFolders) {
+                vscode.window.showErrorMessage('请先打开一个工作区');
+                return;
+            }
+            await createQuickStartFile(workspaceFolders[0].uri.fsPath);
         })
     ];
 
